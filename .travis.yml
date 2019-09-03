@@ -9,7 +9,7 @@ before_install:
 script:
   - docker run -e CI=true jcr1221/react-test npm test
 
-afer_success:
+after_success:
   # building our production image of each service
   - docker build -t jcr1221/multi-client ./client
   - docker build -t jcr1221/multi-nginx ./nginx
