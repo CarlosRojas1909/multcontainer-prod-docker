@@ -16,7 +16,7 @@ afer_success:
   - docker build -t jcr1221/multi-server ./server
   - docker build -t jcr1221/multi-worker ./worker
 
-  # Login into Docker hub through Travis Ci using docker CLI(write: docker login in the terminal). DOCKER_PASSWORD AND DOCKER_ID variables are comming from  travis account saved previously manually
+  # Login into Docker hub through Travis Ci using docker CLI(write: docker login in the terminal). DOCKER_PASSWORD AND DOCKER_ID variables are comming from  travis account saved previously manually...
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
   # Telling travis to take the production images and push them to docher hub
