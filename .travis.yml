@@ -1,0 +1,26 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  # we run test only on development, here we are building and image using dockerfile.dev to run our test only on our client file(react app)
+  - docker build -t jcr1221/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true jcr1221/react-test npm test
+
+afer_success:
+  # building our production image of each service
+  - docker build -t jcr1221/multi-client ./client
+  - docker build -t jcr1221/multi-nginx ./nginx
+  - docker build -t jcr1221/multi-server ./server
+  - docker build -t jcr1221/multi-worker ./worker
+
+  # Login into Docker hub through Travis Ci using docker CLI(docker login in the terminal). DOCKER_PASSWORD AND DOCKER_ID variables are comming from  travis account saved previously manually
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # Telling travis to take the production images and push them to docher hub
+  - docker push jcr1221/multi-client
+  - docker push jcr1221/multi-nginx
+  - docker push jcr1221/multi-server
+  - docker push jcr1221/multi-worker
