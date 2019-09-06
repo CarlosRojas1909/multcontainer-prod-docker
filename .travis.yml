@@ -17,7 +17,7 @@ after_success:
   - docker build -t jcr1221/multi-server ./server
   - docker build -t jcr1221/multi-worker ./worker
 
-  # Login into Docker hub through Travis Ci using docker CLI(write: docker login in the terminal). DOCKER_PASSWORD AND DOCKER_ID variables are comming from  travis account saved previously manually...
+  # Login into Docker hub through Travis Ci using docker CLI(write: docker login in the terminal). DOCKER_PASSWORD AND DOCKER_ID variables are comming from  travis account saved previously manually...this is pretty much a complicated way to login into Docker hub
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
   # Telling travis to take the production images and push them to docher hub
@@ -25,3 +25,21 @@ after_success:
   - docker push jcr1221/multi-nginx
   - docker push jcr1221/multi-server
   - docker push jcr1221/multi-worker
+
+# for deploy to AWS 
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: multi-docker
+  env: MultiDocker-env
+  # S3(bucket in the cloud is created automatically when creating an environment for our multi-docker app)
+  bucket_name: elasticbeanstalk-us-east-2-927908546171
+  bucket_path: docker-multi
+  on:
+    branch: master
+  # We create AWS_ACCESS_KEY and AWS_SECRET_KEY variables in AWS account. going to a service in amazon(iam)/Users....Username, Access tye(Programmatic access), click Permission/ search for all policy for elasticbeanstack(select all or whatever fits better for your app)/review/CreateUser
+  # AWS_ACCESS_KEY and AWS_SECRET_KEY are created in your travis account and save as envoromnment variables.
+  access_key_id: 
+    secure: $AWS-ACCESS-KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
